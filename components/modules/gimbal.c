@@ -24,6 +24,7 @@ static int32_t pitch_ecd_input_convert(struct controller *ctrl, void *input);
 static int32_t gimbal_set_yaw_gyro_angle(struct gimbal *gimbal, float yaw, uint8_t mode);
 static int16_t gimbal_get_ecd_angle(int16_t raw_ecd, int16_t center_offset);
 
+//云台级联控制寄存器
 int32_t gimbal_cascade_register(struct gimbal *gimbal, const char *name, enum device_can can)
 {
   char motor_name[2][OBJECT_NAME_MAX_LEN] = {0};
@@ -90,6 +91,7 @@ end:
   return err;
 }
 
+//设置pitch？？
 int32_t gimbal_set_pitch_delta(struct gimbal *gimbal, float pitch)
 {
   if (gimbal == NULL)
@@ -106,6 +108,7 @@ int32_t gimbal_set_pitch_delta(struct gimbal *gimbal, float pitch)
   return RM_OK;
 }
 
+//设置yaw？？
 int32_t gimbal_set_yaw_delta(struct gimbal *gimbal, float yaw)
 {
   if (gimbal == NULL)
@@ -123,6 +126,7 @@ int32_t gimbal_set_yaw_delta(struct gimbal *gimbal, float yaw)
   return RM_OK;
 }
 
+//设置pitch速度
 int32_t gimbal_set_pitch_speed(struct gimbal *gimbal, float pitch)
 {
   if (gimbal == NULL)
@@ -140,6 +144,7 @@ int32_t gimbal_set_pitch_speed(struct gimbal *gimbal, float pitch)
   return RM_OK;
 }
 
+//设置yaw速度
 int32_t gimbal_set_yaw_speed(struct gimbal *gimbal, float yaw)
 {
   if (gimbal == NULL)
@@ -157,6 +162,7 @@ int32_t gimbal_set_yaw_speed(struct gimbal *gimbal, float yaw)
   return RM_OK;
 }
 
+//设置pitch角度
 int32_t gimbal_set_pitch_angle(struct gimbal *gimbal, float pitch)
 {
   if (gimbal == NULL)
@@ -180,6 +186,7 @@ int32_t gimbal_set_pitch_angle(struct gimbal *gimbal, float pitch)
   return RM_OK;
 }
 
+//设置yaw角度
 int32_t gimbal_set_yaw_angle(struct gimbal *gimbal, float yaw, uint8_t mode)
 {
   if (gimbal == NULL)
@@ -198,6 +205,7 @@ int32_t gimbal_set_yaw_angle(struct gimbal *gimbal, float yaw, uint8_t mode)
   return RM_OK;
 }
 
+//设置pitch模式：陀螺仪模式、编码器模式
 int32_t gimbal_set_pitch_mode(struct gimbal *gimbal, uint8_t mode)
 {
   if (gimbal == NULL)
@@ -221,6 +229,7 @@ int32_t gimbal_set_pitch_mode(struct gimbal *gimbal, uint8_t mode)
   return RM_OK;
 }
 
+//设置yaw模式：陀螺仪模式、编码器模式
 int32_t gimbal_set_yaw_mode(struct gimbal *gimbal, uint8_t mode)
 {
   if (gimbal == NULL)
@@ -244,6 +253,7 @@ int32_t gimbal_set_yaw_mode(struct gimbal *gimbal, uint8_t mode)
   return RM_OK;
 }
 
+//云台补偿
 int32_t gimbal_set_offset(struct gimbal *gimbal, uint16_t yaw_ecd, uint16_t pitch_ecd)
 {
   if (gimbal == NULL)
@@ -255,6 +265,7 @@ int32_t gimbal_set_offset(struct gimbal *gimbal, uint16_t yaw_ecd, uint16_t pitc
   return RM_OK;
 }
 
+//pitch enable
 int32_t gimbal_pitch_enable(struct gimbal *gimbal)
 {
   if (gimbal == NULL)
@@ -265,6 +276,7 @@ int32_t gimbal_pitch_enable(struct gimbal *gimbal)
   return RM_OK;
 }
 
+//pitch disable
 int32_t gimbal_pitch_disable(struct gimbal *gimbal)
 {
   if (gimbal == NULL)
@@ -275,6 +287,7 @@ int32_t gimbal_pitch_disable(struct gimbal *gimbal)
   return RM_OK;
 }
 
+//yaw enable
 int32_t gimbal_yaw_enable(struct gimbal *gimbal)
 {
   if (gimbal == NULL)
@@ -285,6 +298,7 @@ int32_t gimbal_yaw_enable(struct gimbal *gimbal)
   return RM_OK;
 }
 
+//yaw disable
 int32_t gimbal_yaw_disable(struct gimbal *gimbal)
 {
   if (gimbal == NULL)
@@ -295,6 +309,7 @@ int32_t gimbal_yaw_disable(struct gimbal *gimbal)
   return RM_OK;
 }
 
+//云台运行
 int32_t gimbal_execute(struct gimbal *gimbal)
 {
   float motor_out;
@@ -364,6 +379,7 @@ int32_t gimbal_execute(struct gimbal *gimbal)
   return RM_OK;
 }
 
+//云台速率更新
 int32_t gimbal_rate_update(struct gimbal *gimbal, float yaw_rate, float pitch_rate)
 {
   if (gimbal == NULL)
@@ -375,6 +391,7 @@ int32_t gimbal_rate_update(struct gimbal *gimbal, float yaw_rate, float pitch_ra
   return RM_OK;
 }
 
+//云台yaw陀螺仪更新
 int32_t gimbal_yaw_gyro_update(struct gimbal *gimbal, float yaw)
 {
   if (gimbal == NULL)
@@ -385,6 +402,7 @@ int32_t gimbal_yaw_gyro_update(struct gimbal *gimbal, float yaw)
   return RM_OK;
 }
 
+//云台pitch陀螺仪更新
 int32_t gimbal_pitch_gyro_update(struct gimbal *gimbal, float pitch)
 {
   if (gimbal == NULL)
@@ -395,6 +413,7 @@ int32_t gimbal_pitch_gyro_update(struct gimbal *gimbal, float pitch)
   return RM_OK;
 }
 
+//云台获取角度等信息
 int32_t gimbal_get_info(struct gimbal *gimbal, struct gimbal_info *info)
 {
   if (gimbal == NULL)
@@ -414,6 +433,7 @@ int32_t gimbal_get_info(struct gimbal *gimbal, struct gimbal_info *info)
   return RM_OK;
 }
 
+//寻找云台
 gimbal_t gimbal_find(const char *name)
 {
   struct object *object;
@@ -423,6 +443,7 @@ gimbal_t gimbal_find(const char *name)
   return (gimbal_t)object;
 }
 
+//获取云台编码器角度
 static int16_t gimbal_get_ecd_angle(int16_t raw_ecd, int16_t center_offset)
 {
   int16_t tmp = 0;
@@ -443,6 +464,7 @@ static int16_t gimbal_get_ecd_angle(int16_t raw_ecd, int16_t center_offset)
   return tmp;
 }
 
+//获取yaw陀螺仪角度
 static int32_t gimbal_set_yaw_gyro_angle(struct gimbal *gimbal, float yaw, uint8_t mode)
 {
   if (gimbal == NULL)
@@ -492,6 +514,7 @@ static int32_t gimbal_set_yaw_gyro_angle(struct gimbal *gimbal, float yaw, uint8
   return RM_OK;
 }
 
+//陀螺仪yaw作为双环pid的输入
 static int32_t yaw_gyro_input_convert(struct controller *ctrl, void *input)
 {
   cascade_feedback_t cascade_fdb = (cascade_feedback_t)(ctrl->feedback);
@@ -501,6 +524,7 @@ static int32_t yaw_gyro_input_convert(struct controller *ctrl, void *input)
   return RM_OK;
 }
 
+//编码器yaw作为双环pid的输入
 static int32_t yaw_ecd_input_convert(struct controller *ctrl, void *input)
 {
   cascade_feedback_t cascade_fdb = (cascade_feedback_t)(ctrl->feedback);
@@ -510,6 +534,7 @@ static int32_t yaw_ecd_input_convert(struct controller *ctrl, void *input)
   return RM_OK;
 }
 
+//陀螺仪pitch作为双环pid的输入
 static int32_t pitch_gyro_input_convert(struct controller *ctrl, void *input)
 {
   cascade_feedback_t cascade_fdb = (cascade_feedback_t)(ctrl->feedback);
@@ -519,6 +544,7 @@ static int32_t pitch_gyro_input_convert(struct controller *ctrl, void *input)
   return RM_OK;
 }
 
+//编码器pitch作为双环pid的输入
 static int32_t pitch_ecd_input_convert(struct controller *ctrl, void *input)
 {
   cascade_feedback_t cascade_fdb = (cascade_feedback_t)(ctrl->feedback);

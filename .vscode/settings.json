@@ -29,6 +29,9 @@
         "timer_task.h": "c",
         "chassis_task.h": "c",
         "shoot_task.h": "c",
-        "shoot.h": "c"
-    }
+        "shoot.h": "c",
+        "pid.h": "c",
+        "gimbal.h": "c"
+    },
+    "C_Cpp.configurationWarnings": "Disabled"
 }
