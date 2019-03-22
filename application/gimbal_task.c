@@ -287,6 +287,7 @@ void gimbal_init_state_reset(void)
   auto_init_f = 0;
 }
 
+//云台初始回中
 static void gimbal_state_init(gimbal_t pgimbal)
 {
   if (auto_init_f == 0)

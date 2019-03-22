@@ -91,7 +91,7 @@ end:
   return err;
 }
 
-//设置pitch？？
+//设置pitch位移增量
 int32_t gimbal_set_pitch_delta(struct gimbal *gimbal, float pitch)
 {
   if (gimbal == NULL)
@@ -108,7 +108,7 @@ int32_t gimbal_set_pitch_delta(struct gimbal *gimbal, float pitch)
   return RM_OK;
 }
 
-//设置yaw？？
+//设置yaw位移增量
 int32_t gimbal_set_yaw_delta(struct gimbal *gimbal, float yaw)
 {
   if (gimbal == NULL)
