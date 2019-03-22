@@ -104,7 +104,7 @@ int32_t gimbal_set_pitch_delta(struct gimbal *gimbal, float pitch)
   {
     gimbal_set_pitch_angle(gimbal, gimbal->ecd_target_angle.pitch + pitch);
   }
-
+  
   return RM_OK;
 }
 
