@@ -53,6 +53,7 @@ int32_t pit_angle_fdb_js, pit_angle_ref_js;
 int32_t yaw_spd_fdb_js, yaw_spd_ref_js;
 int32_t pit_spd_fdb_js, pit_spd_ref_js;
 
+//重点看
 void gimbal_task(void const *argument)
 {
   uint32_t period = osKernelSysTick();
