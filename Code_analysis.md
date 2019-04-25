@@ -64,11 +64,17 @@
 2. `struct chassis`：
    
    >   struct object parent;
+   >
    >   struct mecanum mecanum;
+   >
    >   struct chassis_acc acc;
+   >
    >   struct motor_device motor[4];
+   >
    >   struct pid motor_pid[4];
+   >
    >   struct pid_feedback motor_feedback[4];
+   >
    >   struct controller ctrl[4];
    
 3. `struct chassis_info`：底盘速度、位置、角度轮速等信息
@@ -113,17 +119,29 @@
 
 3. `struct shoot`：
    >   struct object parent;
+   >
    >   struct shoot_param param;
+   >
    >   enum shoot_state state;
+   >
    >   uint8_t cmd;
+   >
    >   uint8_t trigger_key;
+   >
    >   uint16_t fric_spd[2];
+   >
    >   uint32_t shoot_num;
+   >
    >   uint32_t block_time;
+   >
    >   struct shoot_target target;
+   >
    >   struct motor_device motor;
+   >
    >   struct pid motor_pid;
+   >
    >   struct pid_feedback motor_feedback;
+   >
    >   struct controller ctrl;
 
 ### shoot.c
@@ -165,7 +183,9 @@
 1. `struct single_gyro`：
 
    >   uint32_t std_id;
+   >
    >   float yaw_gyro_angle;
+   >
    >   float yaw_gyro_rate;
 
 ### single_gyro.c
@@ -258,8 +278,11 @@
 1. `struct soft_timer`：软实时
 
    >   uint8_t id;
+   >
    >   uint32_t ticks;
+   >
    >   void \*argc;
+   >
    >   int32_t (*soft_timer_callback)(void *argc);
 
 ### timer_task.c
@@ -278,8 +301,11 @@
 1. `struct object`：
 
    >   char name[OBJECT_NAME_MAX_LEN];
+   >
    >   enum object_class_type type;
+   >
    >   uint8_t flag;
+   >
    >   list_t list;
 
 2. `struct object_information`：设备信息（设备类别）
@@ -301,11 +327,17 @@
 1. `struct device`：
    
    >   struct object parent;
+   >   
    >   enum device_type type;
+   >   
    >   uint16_t flag;
+   >   
    >   uint16_t open_flag;
+   >   
    >   uint8_t ref_count;
+   >   
    >   uint8_t device_id;
+   >   
    >   void *user_data;
 
 ### device.c
@@ -319,18 +351,23 @@
 1. `struct motor_data`：
 
    >   uint16_t ecd;
+   >
    >   uint16_t last_ecd;
    >
    >   int16_t speed_rpm;
+   >
    >   int16_t given_current;
    >
    >   int32_t round_cnt;
+   >
    >   int32_t total_ecd;
+   >
    >   int32_t total_angle;
    >
    >   int32_t ecd_raw_rate;
    >
    >   uint32_t msg_cnt;
+   >
    >   uint16_t offset_ecd;
 
 2. `struct can_msg`： ？
@@ -338,10 +375,13 @@
 3. `struct motor_device`：
 
    >   struct device parent;
+   >
    >   struct motor_data data;
    >
    >   enum device_can can_periph;
+   >
    >   uint16_t can_id;
+   >
    >   uint16_t init_offset_f;
    >
    >   int16_t current;
@@ -416,13 +456,21 @@
 1. `struct controller`：
 
    >   struct object parent;
+   >
    >   enum controller_type type;
+   >
    >   uint8_t enable;
+   >
    >   void \*param;
+   >
    >   void  \*feedback;
+   >
    >   float input;
+   >
    >   float output;
+   >
    >   int32_t (*convert_feedback)(struct controller *ctrl, void *feedback);
+   >
    >   int32_t (\*control)(struct controller *ctrl, void *param, void *feedback, float input);
 
 ### controller.c
