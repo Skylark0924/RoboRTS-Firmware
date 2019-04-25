@@ -1,48 +1,3 @@
-## algorithm 
-
-### mecanum.h
-
-1. `struct mecanum_structure`：麦轮结构参数
-2. `struct mecanum_position`：麦轮位置参数
-3. `struct mecanum_speed`：麦轮速度参数
-4. `struct mecanum_gyro`：麦轮陀螺仪角度和速度
-5. `struct mecanum`： 定义麦轮结构体，包含上述四项参数
-6. `struct mecanum_motor_fdb`：底盘电机编码器、速度返回值
-
-### mecanum.c
-
-1. `void mecanum_calculate(struct mecanum *mec)`：四个麦轮电机速度解算
-2. `void mecanum_position_measure(struct mecanum *mec, struct mecanum_motor_fdb wheel_fdb[])`：
-
-
-
-### pid.h
-
-1. `struct pid_param`：pid参数（p、i、d、最大误差、最大输出、积分限）
-2. `struct pid`：pid结构体
-
-### pid.c
-
-1. `static void pid_param_init( struct pid *pid, float maxout, float inte_limit, float kp, float ki, float kd)`：pid参数初始化
-2. `static void pid_reset(struct pid *pid, float kp, float ki, float kd)`：代码运行时可进行pid参数的修改
-3. `float pid_calculate(struct pid *pid, float get, float set)`：计算增量pid和位置pid
-4. `void pid_struct_init( struct pid *pid, float maxout, float inte_limit, float kp, float ki, float kd)`：pid结构初始化
-
-
-
-### ramp.h
-
-1. `typedef struct ramp_t`：定义了斜坡函数参数
-
-### ramp.c
-
-1. `void ramp_init(ramp_t *ramp, int32_t scale)`：斜坡函数初始化，定义scale
-2. `float ramp_calculate(ramp_t *ramp)`：生成斜坡函数
-
-
-
-
-
 ## modules
 
 ### gimbal.h
@@ -264,7 +219,7 @@
 
 10. `static void gimbal_state_init(gimbal_t pgimbal)`：初始状态云台回中
 
-### chassis.c
+### chassis_task.c
 
 1. `void chassis_task(void const *argument)`：底盘主程序
 
@@ -406,6 +361,49 @@
 4. `motor_data_t motor_device_get_data(motor_device_t motor_dev)`：获取电机数据
 
 5. `int32_t motor_device_set_current(motor_device_t motor_dev, int16_t current)`：设置对应电机电流
+
+
+
+## algorithm 
+
+### mecanum.h
+
+1. `struct mecanum_structure`：麦轮结构参数
+2. `struct mecanum_position`：麦轮位置参数
+3. `struct mecanum_speed`：麦轮速度参数
+4. `struct mecanum_gyro`：麦轮陀螺仪角度和速度
+5. `struct mecanum`： 定义麦轮结构体，包含上述四项参数
+6. `struct mecanum_motor_fdb`：底盘电机编码器、速度返回值
+
+### mecanum.c
+
+1. `void mecanum_calculate(struct mecanum *mec)`：四个麦轮电机速度解算
+2. `void mecanum_position_measure(struct mecanum *mec, struct mecanum_motor_fdb wheel_fdb[])`：
+
+
+
+### pid.h
+
+1. `struct pid_param`：pid参数（p、i、d、最大误差、最大输出、积分限）
+2. `struct pid`：pid结构体
+
+### pid.c
+
+1. `static void pid_param_init( struct pid *pid, float maxout, float inte_limit, float kp, float ki, float kd)`：pid参数初始化
+2. `static void pid_reset(struct pid *pid, float kp, float ki, float kd)`：代码运行时可进行pid参数的修改
+3. `float pid_calculate(struct pid *pid, float get, float set)`：计算增量pid和位置pid
+4. `void pid_struct_init( struct pid *pid, float maxout, float inte_limit, float kp, float ki, float kd)`：pid结构初始化
+
+
+
+### ramp.h
+
+1. `typedef struct ramp_t`：定义了斜坡函数参数
+
+### ramp.c
+
+1. `void ramp_init(ramp_t *ramp, int32_t scale)`：斜坡函数初始化，定义scale
+2. `float ramp_calculate(ramp_t *ramp)`：生成斜坡函数
 
 
 
