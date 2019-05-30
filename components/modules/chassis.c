@@ -22,6 +22,7 @@ static int32_t motor_pid_input_convert(struct controller *ctrl, void *input);
 int32_t chassis_pid_register(struct chassis *chassis, const char *name, enum device_can can)
 {
   char motor_name[4][OBJECT_NAME_MAX_LEN] = {0};
+//	char motor_name[1][OBJECT_NAME_MAX_LEN] = {0};
   uint8_t name_len;
 
   int32_t err;
@@ -39,8 +40,10 @@ int32_t chassis_pid_register(struct chassis *chassis, const char *name, enum dev
   {
     name_len = OBJECT_NAME_MAX_LEN / 2;
   }
-
+ 
+	/***Modified***/
   for (int i = 0; i < 4; i++)
+//	for (int i = 0; i < 1; i++)
   {
     memcpy(&motor_name[i], name, name_len);
     chassis->motor[i].can_periph = can;
@@ -63,6 +66,7 @@ int32_t chassis_pid_register(struct chassis *chassis, const char *name, enum dev
   memcpy(&motor_name[3][name_len], "_BR\0", 4);
 
   for (int i = 0; i < 4; i++)
+//	  for (int i = 0; i < 1; i++)
   {
     err = motor_device_register(&(chassis->motor[i]), motor_name[i], 0);
     if (err != RM_OK)
@@ -74,7 +78,8 @@ int32_t chassis_pid_register(struct chassis *chassis, const char *name, enum dev
   memcpy(&motor_name[2][name_len], "_CTLBL\0", 7);
   memcpy(&motor_name[3][name_len], "_CTLBR\0", 7);
 
-  for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++)
+//  for (int i = 0; i < 1; i++)
   {
     err = pid_controller_register(&(chassis->ctrl[i]), motor_name[i], &(chassis->motor_pid[i]), &(chassis->motor_feedback[i]), 1);
     if (err != RM_OK)
@@ -120,6 +125,7 @@ int32_t chassis_execute(struct chassis *chassis)
   mecanum_calculate(&(chassis->mecanum));
 
   for (int i = 0; i < 4; i++)
+//	for (int i = 0; i < 1; i++)
   {
     pdata = motor_device_get_data(&(chassis->motor[i]));
 
@@ -207,7 +213,8 @@ int32_t chassis_get_info(struct chassis *chassis, struct chassis_info *info)
   ANGLE_LIMIT_360_TO_180(info->yaw_gyro_angle);
   info->yaw_gyro_rate = chassis->mecanum.gyro.yaw_gyro_rate;
 
-  for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++)
+//  for (int i = 0; i < 1; i++)
   {
     info->wheel_rpm[i] = chassis->mecanum.wheel_rpm[i] * MOTOR_DECELE_RATIO;
   }
@@ -230,6 +237,7 @@ int32_t chassis_enable(struct chassis *chassis)
     return -RM_INVAL;
 
   for (int i = 0; i < 4; i++)
+//	for (int i = 0; i < 1; i++)
   {
     controller_enable(&(chassis->ctrl[i])); 
   }
@@ -243,6 +251,7 @@ int32_t chassis_disable(struct chassis *chassis)
     return -RM_INVAL;
 
   for (int i = 0; i < 4; i++)
+//	for (int i = 0; i < 1; i++)
   {
     controller_disable(&(chassis->ctrl[i])); 
   }

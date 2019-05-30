@@ -115,8 +115,8 @@ void task_init(void)
   
   if (app == CHASSIS_APP)
   {
-    osThreadDef(CHASSIS_TASK, chassis_task, osPriorityHigh, 0, 512);
-    chassis_task_t = osThreadCreate(osThread(CHASSIS_TASK), NULL);
+//    osThreadDef(CHASSIS_TASK, chassis_task, osPriorityHigh, 0, 512);
+//    chassis_task_t = osThreadCreate(osThread(CHASSIS_TASK), NULL);
   }
   else
   {
