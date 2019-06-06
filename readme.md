@@ -1,6 +1,8 @@
 
 ## 概述
 
+- en doc   [readme](doc/en/readme.md)
+
 ### 软件环境
 
  - Toolchain/IDE : MDK-ARM V5
@@ -52,7 +54,6 @@
 2. 左前轮电机掉线
 3. 左后轮电机掉线
 4. 右后轮电机掉线
-8. 单轴陀螺仪掉线
 
 #### 云台模块
 
@@ -61,11 +62,14 @@
 7. 拨盘电机掉线
 8. 单轴陀螺仪掉线
 
-6. 遥控器离线，裁判系统或者 PC 端串口没有连接，此时红灯常亮
+#### 遥控器离线
+
+此时红灯常亮
 
 ### 文档
 
 - 协议文档  [protocol](doc/ch/protocol.md)
+- protocol [document](doc/en/protocol.md)
 
 ## 快速开始
 
