@@ -65,8 +65,8 @@ void shoot_task(void const *argument)
         shoot_set_cmd(pshoot, SHOOT_STOP_CMD, 0);
       }
     }
-
-    shoot_execute(pshoot);
+		
+		shoot_execute(pshoot);
     osDelayUntil(&period, 5);
   }
 }

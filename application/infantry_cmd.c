@@ -76,7 +76,7 @@ void infantry_cmd_task(void const *argument)
   chassis_t pchassis = NULL;
 
   pshoot = shoot_find("shoot");
-  pgimbal = gimbal_find("gimbal");
+//  pgimbal = gimbal_find("gimbal");
   pchassis = chassis_find("chassis");
 
   if (app == CHASSIS_APP)
@@ -89,10 +89,10 @@ void infantry_cmd_task(void const *argument)
   else
   {
     prc_dev = rc_device_find("can_rc");
-    protocol_rcv_cmd_register(CMD_SET_GIMBAL_ANGLE, gimbal_angle_ctrl);
-    protocol_rcv_cmd_register(CMD_SET_FRICTION_SPEED, shoot_firction_ctrl);
+//    protocol_rcv_cmd_register(CMD_SET_GIMBAL_ANGLE, gimbal_angle_ctrl);
+//    protocol_rcv_cmd_register(CMD_SET_FRICTION_SPEED, shoot_firction_ctrl);
     protocol_rcv_cmd_register(CMD_SET_SHOOT_FREQUENTCY, shoot_ctrl);
-    protocol_rcv_cmd_register(CMD_GIMBAL_ADJUST, gimbal_adjust_cmd);
+//    protocol_rcv_cmd_register(CMD_GIMBAL_ADJUST, gimbal_adjust_cmd);
   }
 
   while (1)
@@ -128,27 +128,27 @@ void infantry_cmd_task(void const *argument)
           chassis_set_speed(pchassis, pacc->vx, pacc->vy, pacc->vw / 10.0f);
         }
 
-        if (event.value.signals & MANIFOLD2_GIMBAL_SIGNAL)
-        {
-          struct cmd_gimbal_angle *pangle;
-          pangle = &manifold_cmd.gimbal_angle;
-          if (pangle->ctrl.bit.pitch_mode == 0)
-          {
-            gimbal_set_pitch_angle(pgimbal, pangle->pitch / 10.0f);
-          }
-          else
-          {
-            gimbal_set_pitch_speed(pgimbal, pangle->pitch / 10.0f);
-          }
-          if (pangle->ctrl.bit.yaw_mode == 0)
-          {
-            gimbal_set_yaw_angle(pgimbal, pangle->yaw / 10.0f, 0);
-          }
-          else
-          {
-            gimbal_set_yaw_speed(pgimbal, pangle->yaw / 10.0f);
-          }
-        }
+//        if (event.value.signals & MANIFOLD2_GIMBAL_SIGNAL)
+//        {
+//          struct cmd_gimbal_angle *pangle;
+//          pangle = &manifold_cmd.gimbal_angle;
+//          if (pangle->ctrl.bit.pitch_mode == 0)
+//          {
+//            gimbal_set_pitch_angle(pgimbal, pangle->pitch / 10.0f);
+//          }
+//          else
+//          {
+//            gimbal_set_pitch_speed(pgimbal, pangle->pitch / 10.0f);
+//          }
+//          if (pangle->ctrl.bit.yaw_mode == 0)
+//          {
+//            gimbal_set_yaw_angle(pgimbal, pangle->yaw / 10.0f, 0);
+//          }
+//          else
+//          {
+//            gimbal_set_yaw_speed(pgimbal, pangle->yaw / 10.0f);
+//          }
+//        }
 
         if (event.value.signals & MANIFOLD2_SHOOT_SIGNAL)
         {
@@ -158,12 +158,12 @@ void infantry_cmd_task(void const *argument)
           shoot_set_turn_speed(pshoot, pctrl->shoot_freq);
         }
 
-        if (event.value.signals & MANIFOLD2_FRICTION_SIGNAL)
-        {
-          struct cmd_firction_speed *pctrl;
-          pctrl = &manifold_cmd.firction_speed;
-          shoot_set_fric_speed(pshoot, pctrl->left, pctrl->right);
-        }
+//        if (event.value.signals & MANIFOLD2_FRICTION_SIGNAL)
+//        {
+//          struct cmd_firction_speed *pctrl;
+//          pctrl = &manifold_cmd.firction_speed;
+//          shoot_set_fric_speed(pshoot, pctrl->left, pctrl->right);
+//        }
       }
       else
       {

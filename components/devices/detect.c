@@ -44,7 +44,7 @@ int32_t detect_device_update(detect_device_t detect_dev, uint32_t event)
 
   uint32_t temp = 1;
 
-  event &= detect_dev->enable;
+  event = event & detect_dev->enable;
 
   for (int i = 0; i < 32; i++)
   {

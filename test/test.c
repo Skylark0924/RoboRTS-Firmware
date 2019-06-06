@@ -113,9 +113,9 @@ void test_init(void)
   //  test_module_register((void *)limit_test, NULL);
   
   /*******shoot test*******************/
-  // pwm_device_init();
-  // shoot_pid_register(&test_shoot, "shoot", DEVICE_CAN1);
-  // test_module_register((void *)shoot_test, NULL);
+//   pwm_device_init();
+//   shoot_pid_register(&test_shoot, "shoot", DEVICE_CAN1);
+//   test_module_register((void *)shoot_test, NULL);
   
   /*******detect test******************/
   // detect_device_register(&test_detect, "detect", 0, 0);

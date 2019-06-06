@@ -26,6 +26,7 @@
 
 #include "motor.h"
 #include "pid_controller.h"
+#include "dbus.h"
 
 #define SHOOT_STOP_CMD (0u)
 #define SHOOT_ONCE_CMD (1u)

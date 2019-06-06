@@ -121,10 +121,11 @@ int32_t shoot_execute(struct shoot *shoot)
   if (shoot == NULL)
     return -RM_INVAL;
 
-  shoot_fric_ctrl(shoot);
-  shoot_block_check(shoot);
-  shoot_cmd_ctrl(shoot);
-
+  // shoot_fric_ctrl(shoot);
+  //shoot_block_check(shoot);
+  //shoot_cmd_ctrl(shoot);
+	
+	shoot->target.motor_speed = 1500;
   pdata = motor_device_get_data(&(shoot->motor));
 
   controller_set_input(&(shoot->ctrl), shoot->target.motor_speed);
@@ -132,6 +133,7 @@ int32_t shoot_execute(struct shoot *shoot)
   controller_get_output(&(shoot->ctrl), &motor_out);
 
   motor_device_set_current(&shoot->motor, (int16_t)motor_out);
+//	 motor_device_set_current(&shoot->motor, 30000);
 
   return RM_OK;
 }
@@ -242,7 +244,8 @@ static int32_t shoot_cmd_ctrl(struct shoot *shoot)
   }
   else if (shoot->state == SHOOT_READY)
   {
-    if ((shoot->fric_spd[0] > FRIC_MIN_SPEED) && (shoot->fric_spd[1] > FRIC_MIN_SPEED))
+//    if ((shoot->fric_spd[0] > FRIC_MIN_SPEED) && (shoot->fric_spd[1] > FRIC_MIN_SPEED))
+		if(1)
     {
       switch (shoot->cmd)
       {

@@ -124,6 +124,7 @@ object_t object_find(const char *name, enum object_class_type type)
        node = node->next)
   {
     object = list_entry(node, struct object, list);
+		// 此处判断是否检测到对应目标
     if (strncmp(object->name, name, OBJECT_NAME_MAX_LEN) == 0)
     {
       /* leave critical */

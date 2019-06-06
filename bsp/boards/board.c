@@ -36,6 +36,12 @@ int32_t can1_motor_msg_rec(CAN_RxHeaderTypeDef *header, uint8_t *data)
   return 0;
 }
 
+int32_t can2_motor_msg_rec(CAN_RxHeaderTypeDef *header, uint8_t *data)
+{
+  motor_device_data_update(DEVICE_CAN2, header->StdId, data);
+  return 0;
+}
+
 int32_t can2_single_gyro_rec(CAN_RxHeaderTypeDef *header, uint8_t *data)
 {
   struct single_gyro gyro = {0x401, 0, 0};
@@ -142,6 +148,12 @@ int32_t motor_can1_output_1ms(void *argc)
   return 0;
 }
 
+int32_t motor_can2_output_1ms(void *argc)
+{
+  motor_device_can_output(DEVICE_CAN2);
+  return 0;
+}
+
 void board_config(void)
 {
   soft_timer_init();
@@ -155,12 +167,14 @@ void board_config(void)
   dr16_rx_uart_callback_register(dr16_rx_data_by_uart);
 
   soft_timer_register(motor_can1_output_1ms, NULL, 1);
+	soft_timer_register(motor_can2_output_1ms, NULL, 1);
   soft_timer_register(beep_ctrl_times, NULL, 1);  
   soft_timer_register(led_toggle_300ms, NULL, 1); 
 
   motor_device_can_send_register(motor_canstd_send);
-  single_gyro_can_send_register(gyro_can_std_send);
+//  single_gyro_can_send_register(gyro_can_std_send);
 
   can_fifo0_rx_callback_register(&can1_manage, can1_motor_msg_rec);
-  can_fifo0_rx_callback_register(&can2_manage, can2_single_gyro_rec);
+	can_fifo0_rx_callback_register(&can2_manage, can2_motor_msg_rec);
+//  can_fifo0_rx_callback_register(&can2_manage, can2_single_gyro_rec);
 }
