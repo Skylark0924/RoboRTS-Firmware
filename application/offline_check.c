@@ -54,7 +54,7 @@ void offline_init(void)
   }
 
   pshoot = shoot_find("shoot");
-//  pgimbal = gimbal_find("gimbal");
+  pgimbal = gimbal_find("gimbal");
   pchassis = chassis_find("chassis");
 
   detect_device_register(&offline_dev, "detect", 0, 0);
@@ -71,8 +71,8 @@ void offline_init(void)
   }
   else
   {
-//    detect_device_add_event(&offline_dev, YAW_OFFLINE_EVENT, 100, offline_beep_set_times, &offline_beep_times[5]);
-//    detect_device_add_event(&offline_dev, PITCH_OFFLINE_EVENT, 100, offline_beep_set_times, &offline_beep_times[6]);
+    detect_device_add_event(&offline_dev, YAW_OFFLINE_EVENT, 100, offline_beep_set_times, &offline_beep_times[5]);
+    detect_device_add_event(&offline_dev, PITCH_OFFLINE_EVENT, 100, offline_beep_set_times, &offline_beep_times[6]);
     detect_device_add_event(&offline_dev, TURN_OFFLINE_EVENT, 100, offline_beep_set_times, &offline_beep_times[7]);
   }
 
@@ -88,8 +88,8 @@ int32_t offline_check(void *argc)
   {
     offline_beep_set_times(&offline_beep_times[0]);
 
-//    gimbal_yaw_enable(pgimbal);
-//    gimbal_pitch_enable(pgimbal);
+    gimbal_yaw_enable(pgimbal);
+    gimbal_pitch_enable(pgimbal);
     shoot_enable(pshoot);
 
     chassis_enable(pchassis);
@@ -98,9 +98,9 @@ int32_t offline_check(void *argc)
   }
   else
   {
-		//offline_beep_set_times(&offline_beep_times[2]);
-//    gimbal_yaw_disable(pgimbal);
-//    gimbal_pitch_disable(pgimbal);
+//		offline_beep_set_times(&offline_beep_times[0]);
+    gimbal_yaw_disable(pgimbal);
+    gimbal_pitch_disable(pgimbal);
     shoot_disable(pshoot);
     chassis_disable(pchassis);
   }
@@ -114,7 +114,7 @@ int32_t get_offline_state(void)
 
 int32_t rc_offline_callback(void *argc)
 {
-  beep_set_times(0);
+  offline_beep_set_times(&offline_beep_times[1]);
 	LED_R_ON();
   gimbal_init_state_reset();
   return 0;
@@ -141,12 +141,12 @@ int32_t can1_detect_update(CAN_RxHeaderTypeDef *header, uint8_t *rx_data)
 //  case 0x204:
 //    detect_device_update(&offline_dev, MOTOR4_OFFLINE_EVENT);
 //    break;
-//  case 0x205:
-//    detect_device_update(&offline_dev, YAW_OFFLINE_EVENT);
-//    break;
-//  case 0x206:
-//    detect_device_update(&offline_dev, PITCH_OFFLINE_EVENT);
-//    break;
+  case 0x205:
+    detect_device_update(&offline_dev, YAW_OFFLINE_EVENT);
+    break;
+  case 0x206:
+    detect_device_update(&offline_dev, PITCH_OFFLINE_EVENT);
+    break;
   case 0x207:
     detect_device_update(&offline_dev, TURN_OFFLINE_EVENT);
     break;

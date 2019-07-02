@@ -15,6 +15,8 @@
  *  along with this program. If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************************/
 
+#include "gimbal.h"
+
 #ifndef __MECANUM_H__
 #define __MECANUM_H__
 
@@ -102,7 +104,7 @@ struct mecanum_motor_fdb
   float speed_rpm;
 };
 
-void mecanum_calculate(struct mecanum *mec);
+void mecanum_calculate(struct mecanum *mec, struct gimbal *ch_gimbal);
 void mecanum_position_measure(struct mecanum *mec, struct mecanum_motor_fdb wheel_fdb[]);
 
 #endif // __MECANUM_H__

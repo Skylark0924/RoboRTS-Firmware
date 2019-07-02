@@ -93,7 +93,38 @@ end:
   return err;
 }
 
-int32_t chassis_execute(struct chassis *chassis)
+
+int32_t chassis_gimbal_yaw_register(struct gimbal *gimbal, const char *name, enum device_can can)
+{
+	char motor_name[1][OBJECT_NAME_MAX_LEN] = {0};
+  uint8_t name_len;
+
+  if (gimbal == NULL)
+    return -RM_INVAL;
+  if (gimbal_find(name) != NULL)
+    return -RM_EXISTED;
+
+  object_init(&(gimbal->parent), Object_Class_Gimbal, name);
+
+  name_len = strlen(name);
+
+  if (name_len > OBJECT_NAME_MAX_LEN / 2)
+  {
+    name_len = OBJECT_NAME_MAX_LEN / 2;
+  }
+
+
+   memcpy(&motor_name[0], name, name_len);
+   gimbal->motor[0].can_periph = can;
+   gimbal->motor[0].can_id = 0x205;
+
+
+  memcpy(&motor_name[YAW_MOTOR_INDEX][name_len], "_CH_YAW\0", 5);
+	
+	  return RM_OK;
+}
+
+int32_t chassis_execute(struct chassis *chassis, struct gimbal *ch_gimbal)
 {
   float motor_out;
   struct motor_data *pdata;
@@ -122,7 +153,7 @@ int32_t chassis_execute(struct chassis *chassis)
     chassis->mecanum.speed.vw += chassis->acc.wz/1000.0f*period;
   }
   
-  mecanum_calculate(&(chassis->mecanum));
+  mecanum_calculate(&(chassis->mecanum), ch_gimbal);
 
   for (int i = 0; i < 4; i++)
 //	for (int i = 0; i < 1; i++)

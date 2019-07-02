@@ -39,26 +39,35 @@
     }                                \
   } while (0)
 
+	
+	
 /**
   * @brief mecanum glb_chassis velocity decomposition.F:forword; B:backword; L:left; R:right
   * @param input : ccx=+vx(mm/s)  ccy=+vy(mm/s)  ccw=+vw(deg/s)
   *        output: every wheel speed(rpm)
   * @note  1=FR 2=FL 3=BL 4=BR
   */
-void mecanum_calculate(struct mecanum *mec)
+void mecanum_calculate(struct mecanum *mec, struct gimbal *ch_gimbal)
 {
-  static float rotate_ratio_fr;
-  static float rotate_ratio_fl;
-  static float rotate_ratio_bl;
-  static float rotate_ratio_br;
+//  static float rotate_ratio_fr;
+//  static float rotate_ratio_fl;
+//  static float rotate_ratio_bl;
+//  static float rotate_ratio_br;
+	static float rotate_ratio_f;
+	static float rotate_ratio_b;
   static float wheel_rpm_ratio;
+	
+	float gap_angle_radian = ch_gimbal->ecd_angle.yaw / RADIAN_COEF;
 
-  rotate_ratio_fr = ((mec->param.wheelbase + mec->param.wheeltrack) / 2.0f - mec->param.rotate_x_offset + mec->param.rotate_y_offset) / RADIAN_COEF;
-  rotate_ratio_fl = ((mec->param.wheelbase + mec->param.wheeltrack) / 2.0f - mec->param.rotate_x_offset - mec->param.rotate_y_offset) / RADIAN_COEF;
-  rotate_ratio_bl = ((mec->param.wheelbase + mec->param.wheeltrack) / 2.0f + mec->param.rotate_x_offset - mec->param.rotate_y_offset) / RADIAN_COEF;
-  rotate_ratio_br = ((mec->param.wheelbase + mec->param.wheeltrack) / 2.0f + mec->param.rotate_x_offset + mec->param.rotate_y_offset) / RADIAN_COEF;
+//  rotate_ratio_fr = ((mec->param.wheelbase + mec->param.wheeltrack) / 2.0f - mec->param.rotate_x_offset + mec->param.rotate_y_offset) / RADIAN_COEF;
+//  rotate_ratio_fl = ((mec->param.wheelbase + mec->param.wheeltrack) / 2.0f - mec->param.rotate_x_offset - mec->param.rotate_y_offset) / RADIAN_COEF;
+//  rotate_ratio_bl = ((mec->param.wheelbase + mec->param.wheeltrack) / 2.0f + mec->param.rotate_x_offset - mec->param.rotate_y_offset) / RADIAN_COEF;
+//  rotate_ratio_br = ((mec->param.wheelbase + mec->param.wheeltrack) / 2.0f + mec->param.rotate_x_offset + mec->param.rotate_y_offset) / RADIAN_COEF;
 
-  wheel_rpm_ratio = 60.0f / (mec->param.wheel_perimeter * MOTOR_DECELE_RATIO);
+	rotate_ratio_f = ((mec->param.wheelbase + mec->param.wheeltrack) / 2.0f - mec->param.rotate_y_offset) / RADIAN_COEF;
+	rotate_ratio_b = ((mec->param.wheelbase + mec->param.wheeltrack) / 2.0f + mec->param.rotate_y_offset) / RADIAN_COEF;
+
+	wheel_rpm_ratio = 60.0f * MOTOR_DECELE_RATIO / mec->param.wheel_perimeter;
 
   MEC_VAL_LIMIT(mec->speed.vx, -MAX_CHASSIS_VX_SPEED, MAX_CHASSIS_VX_SPEED); //mm/s
   MEC_VAL_LIMIT(mec->speed.vy, -MAX_CHASSIS_VY_SPEED, MAX_CHASSIS_VY_SPEED); //mm/s
@@ -66,12 +75,20 @@ void mecanum_calculate(struct mecanum *mec)
 
   float wheel_rpm[4];
   float max = 0;
+			
+	
+	float cos_sub_sin = cos(gap_angle_radian)-sin(gap_angle_radian);
+	float cos_add_sin = cos(gap_angle_radian)+sin(gap_angle_radian);
 
-  wheel_rpm[0] = (-mec->speed.vx - mec->speed.vy - mec->speed.vw * rotate_ratio_fr) * wheel_rpm_ratio;
-  wheel_rpm[1] = (mec->speed.vx - mec->speed.vy - mec->speed.vw * rotate_ratio_fl) * wheel_rpm_ratio;
-  wheel_rpm[2] = (mec->speed.vx + mec->speed.vy - mec->speed.vw * rotate_ratio_bl) * wheel_rpm_ratio;
-  wheel_rpm[3] = (-mec->speed.vx + mec->speed.vy - mec->speed.vw * rotate_ratio_br) * wheel_rpm_ratio;
-
+//  wheel_rpm[0] = (-mec->speed.vx - mec->speed.vy - mec->speed.vw * rotate_ratio_fr) * wheel_rpm_ratio;
+//  wheel_rpm[1] = (mec->speed.vx - mec->speed.vy - mec->speed.vw * rotate_ratio_fl) * wheel_rpm_ratio;
+//  wheel_rpm[2] = (mec->speed.vx + mec->speed.vy - mec->speed.vw * rotate_ratio_bl) * wheel_rpm_ratio;
+//  wheel_rpm[3] = (-mec->speed.vx + mec->speed.vy - mec->speed.vw * rotate_ratio_br) * wheel_rpm_ratio;
+	
+	wheel_rpm[0] = (-mec->speed.vx*cos_sub_sin-mec->speed.vy*cos_add_sin+mec->speed.vw*rotate_ratio_f)*wheel_rpm_ratio; //转子的转每分
+	wheel_rpm[1] = (-mec->speed.vx*cos_add_sin+mec->speed.vy*cos_sub_sin+mec->speed.vw*rotate_ratio_f)*wheel_rpm_ratio;
+	wheel_rpm[2] = (mec->speed.vx*cos_sub_sin+mec->speed.vy*cos_add_sin+mec->speed.vw*rotate_ratio_b)*wheel_rpm_ratio;
+	wheel_rpm[3] = (mec->speed.vx*cos_add_sin-mec->speed.vy*cos_sub_sin+mec->speed.vw*rotate_ratio_b)*wheel_rpm_ratio;
   //find max item
   for (uint8_t i = 0; i < 4; i++)
   {

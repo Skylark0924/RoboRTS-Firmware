@@ -52,7 +52,7 @@
 #define __MAIN_H__
 
 /* Includes ------------------------------------------------------------------*/
-
+#include "stm32f4xx_hal.h"
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
@@ -92,6 +92,10 @@
 #define IO_PROBE_GPIO_Port GPIOD
 #define KEY_Pin GPIO_PIN_2
 #define KEY_GPIO_Port GPIOB
+#define Cap_V_Pin GPIO_PIN_0
+#define Cap_V_GPIO_Port GPIOC
+#define Vol_Pin GPIO_PIN_2
+#define Vol_GPIO_Port GPIOC
 
 /* ########################## Assert Selection ############################## */
 /**

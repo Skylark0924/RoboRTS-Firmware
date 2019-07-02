@@ -95,8 +95,8 @@ void gimbal_task(void const *argument)
     if (rc_device_get_state(prc_dev, RC_S2_UP) == RM_OK)
     {
       gimbal_set_yaw_mode(pgimbal, GYRO_MODE);
-      pit_delta = -(float)prc_info->ch4 * 0.0007f;
-      yaw_delta = -(float)prc_info->ch3 * 0.0007f;
+      pit_delta = -(float)prc_info->ch4 * 0.006f;
+      yaw_delta = -(float)prc_info->ch3 * 0.006f;
       gimbal_set_pitch_delta(pgimbal, pit_delta);
       gimbal_set_yaw_delta(pgimbal, yaw_delta);
     }
@@ -104,12 +104,12 @@ void gimbal_task(void const *argument)
     if (rc_device_get_state(prc_dev, RC_S2_MID) == RM_OK)
     {
       gimbal_set_yaw_mode(pgimbal, ENCODER_MODE);
-      pit_delta = -(float)prc_info->ch4 * 0.0007f;
+      pit_delta = -(float)prc_info->ch4 * 0.006f;
       gimbal_set_pitch_delta(pgimbal, pit_delta);
 
       if (rc_device_get_state(prc_dev, RC_S2_UP2MID) == RM_OK)
       {
-        gimbal_set_yaw_angle(pgimbal, 0, 0);
+        gimbal_set_yaw_angle(pgimbal,0, 0);
       }
     }
 
@@ -153,6 +153,7 @@ static int32_t gimbal_imu_updata(void *argc)
   gimbal_t pgimbal = (gimbal_t)argc;
   mpu_get_data(&mpu_sensor);
   mahony_ahrs_updateIMU(&mpu_sensor, &mahony_atti);
+	gimbal_yaw_gyro_update(pgimbal, -mahony_atti.yaw+180);
   gimbal_pitch_gyro_update(pgimbal, -mahony_atti.roll);
   gimbal_rate_update(pgimbal, mpu_sensor.wz * RAD_TO_DEG, -mpu_sensor.wx * RAD_TO_DEG);
   return 0;

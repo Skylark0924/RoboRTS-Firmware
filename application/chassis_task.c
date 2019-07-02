@@ -20,7 +20,7 @@
 #include "timer_task.h"
 #include "infantry_cmd.h"
 
-static float vx, vy, wz;
+static float vx, vy, vw;
 
 float follow_relative_angle;
 struct pid pid_follow = {0}; //angle control
@@ -29,9 +29,11 @@ void chassis_task(void const *argument)
 {
   uint32_t period = osKernelSysTick();
   chassis_t pchassis = NULL;
+	gimbal_t ch_gimbal = NULL;
   rc_device_t prc_dev = NULL;
   rc_info_t prc_info = NULL;
   pchassis = chassis_find("chassis");
+	ch_gimbal=gimbal_find("ch_gimbal");
   prc_dev = rc_device_find("uart_rc");
 
   if (prc_dev != NULL)
@@ -54,18 +56,20 @@ void chassis_task(void const *argument)
       {
         vx = (float)prc_info->ch2 / 660 * MAX_CHASSIS_VX_SPEED;
         vy = -(float)prc_info->ch1 / 660 * MAX_CHASSIS_VY_SPEED;
-        wz = -pid_calculate(&pid_follow, follow_relative_angle, 0);
-        chassis_set_offset(pchassis, ROTATE_X_OFFSET, ROTATE_Y_OFFSET);
-        chassis_set_speed(pchassis, vx, vy, wz);
+				vw = 400;
+//        wz = -pid_calculate(&pid_follow, follow_relative_angle, 0);
+				chassis_set_offset(pchassis, 0, 0);
+//        chassis_set_offset(pchassis, ROTATE_X_OFFSET, ROTATE_Y_OFFSET);
+        chassis_set_speed(pchassis, vx, vy, vw);
       }
 
       if (rc_device_get_state(prc_dev, RC_S2_MID) == RM_OK)
       {
         vx = (float)prc_info->ch2 / 660 * MAX_CHASSIS_VX_SPEED;
         vy = -(float)prc_info->ch1 / 660 * MAX_CHASSIS_VY_SPEED;
-        wz = -(float)prc_info->ch3 / 660 * MAX_CHASSIS_VW_SPEED;
+        vw = -(float)prc_info->ch3 / 660 * MAX_CHASSIS_VW_SPEED;
         chassis_set_offset(pchassis, 0, 0);
-        chassis_set_speed(pchassis, vx, vy, wz);
+        chassis_set_speed(pchassis, vx, vy, vw);
       }
 
       if (rc_device_get_state(prc_dev, RC_S2_MID2DOWN) == RM_OK)
@@ -81,7 +85,7 @@ void chassis_task(void const *argument)
       chassis_set_acc(pchassis, 0, 0, 0);
     }
 
-    chassis_execute(pchassis);
+    chassis_execute(pchassis, ch_gimbal);
     osDelayUntil(&period, 2);
   }
 }

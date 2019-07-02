@@ -68,7 +68,7 @@ int32_t gimbal_cascade_register(struct gimbal *gimbal, const char *name, enum de
   gimbal->mode.bit.yaw_mode = ENCODER_MODE;
   gimbal->ctrl[YAW_MOTOR_INDEX].convert_feedback = yaw_ecd_input_convert;
   pid_struct_init(&(gimbal->cascade[YAW_MOTOR_INDEX].outer), 2000, 0, 50, 0, 0);
-  pid_struct_init(&(gimbal->cascade[YAW_MOTOR_INDEX].inter), 30000, 3000, 70, 0.2, 0);
+  pid_struct_init(&(gimbal->cascade[YAW_MOTOR_INDEX].inter), 30000, 3000, 1, 0.2, 0);
 
   gimbal->mode.bit.pitch_mode = ENCODER_MODE;
   gimbal->ctrl[PITCH_MOTOR_INDEX].convert_feedback = pitch_ecd_input_convert;
@@ -198,7 +198,7 @@ int32_t gimbal_set_yaw_angle(struct gimbal *gimbal, float yaw, uint8_t mode)
   }
   else
   {
-    VAL_LIMIT(yaw, YAW_ANGLE_MIN, YAW_ANGLE_MAX);
+//    VAL_LIMIT(yaw, YAW_ANGLE_MIN, YAW_ANGLE_MAX);
     gimbal->ecd_target_angle.yaw = yaw;
   }
 
@@ -246,7 +246,7 @@ int32_t gimbal_set_yaw_mode(struct gimbal *gimbal, uint8_t mode)
     else if (mode == ENCODER_MODE)
     {
       gimbal->ctrl[YAW_MOTOR_INDEX].convert_feedback = yaw_ecd_input_convert;
-      gimbal_set_yaw_angle(gimbal, gimbal->ecd_angle.yaw, 0);
+      gimbal_set_yaw_angle(gimbal, gimbal->ecd_angle.yaw + 90.0f, 0);
     }
   }
 
@@ -328,7 +328,7 @@ int32_t gimbal_execute(struct gimbal *gimbal)
     center_offset = gimbal->sensor.gyro_angle.yaw - gimbal->ecd_angle.yaw;
     ctrl = &(gimbal->ctrl[YAW_MOTOR_INDEX]);
 
-    VAL_LIMIT(yaw, YAW_ANGLE_MIN + center_offset, YAW_ANGLE_MAX + center_offset);
+//    VAL_LIMIT(yaw, YAW_ANGLE_MIN + center_offset, YAW_ANGLE_MAX + center_offset);
     controller_set_input(ctrl, yaw);
   }
   else
@@ -337,7 +337,7 @@ int32_t gimbal_execute(struct gimbal *gimbal)
     float yaw;
     yaw = gimbal->ecd_target_angle.yaw;
     ctrl = &(gimbal->ctrl[YAW_MOTOR_INDEX]);
-    VAL_LIMIT(yaw, YAW_ANGLE_MIN, YAW_ANGLE_MAX);
+//    VAL_LIMIT(yaw, YAW_ANGLE_MIN, YAW_ANGLE_MAX);
     controller_set_input(ctrl, yaw);
   }
 

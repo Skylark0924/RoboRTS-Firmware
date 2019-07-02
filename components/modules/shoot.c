@@ -132,7 +132,7 @@ int32_t shoot_execute(struct shoot *shoot)
   controller_execute(&(shoot->ctrl), (void *)pdata);
   controller_get_output(&(shoot->ctrl), &motor_out);
 
-  motor_device_set_current(&shoot->motor, (int16_t)motor_out);
+//  motor_device_set_current(&shoot->motor, (int16_t)motor_out);
 //	 motor_device_set_current(&shoot->motor, 30000);
 
   return RM_OK;
