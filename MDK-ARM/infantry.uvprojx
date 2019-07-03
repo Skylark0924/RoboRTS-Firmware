@@ -427,6 +427,11 @@
               <FileType>1</FileType>
               <FilePath>..\application\referee_system.c</FilePath>
             </File>
+            <File>
+              <FileName>Cap2ControlTask.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\application\Cap2ControlTask.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

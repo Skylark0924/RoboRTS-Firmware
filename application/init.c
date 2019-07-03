@@ -30,6 +30,7 @@
 #include "gimbal_task.h"
 #include "timer_task.h"
 #include "shoot_task.h"
+#include "Cap2ControlTask.h"
 #include "communicate.h"
 #include "infantry_cmd.h"
 #include "init.h"
@@ -99,6 +100,7 @@ void hw_init(void)
 
 osThreadId timer_task_t;
 osThreadId chassis_task_t;
+osThreadId cap_task_t;
 osThreadId gimbal_task_t;
 osThreadId communicate_task_t;
 osThreadId cmd_task_t;
@@ -122,6 +124,9 @@ void task_init(void)
   {
     osThreadDef(CHASSIS_TASK, chassis_task, osPriorityRealtime, 0, 512);
     chassis_task_t = osThreadCreate(osThread(CHASSIS_TASK), NULL);
+		    
+		osThreadDef(CAP_TASK, Cap_task, osPriorityNormal, 0, 512);
+    cap_task_t = osThreadCreate(osThread(CAP_TASK), NULL);
   }
   else
   {

@@ -58,7 +58,10 @@
 /* USER CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/
-
+#define Cap_In_Pin GPIO_PIN_4
+#define Cap_In_GPIO_Port GPIOE
+#define Cap_Out_Pin GPIO_PIN_5
+#define Cap_Out_GPIO_Port GPIOE
 #define POWER_OUT1_Pin GPIO_PIN_2
 #define POWER_OUT1_GPIO_Port GPIOH
 #define POWER_OUT2_Pin GPIO_PIN_3

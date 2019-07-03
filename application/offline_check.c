@@ -141,9 +141,9 @@ int32_t can1_detect_update(CAN_RxHeaderTypeDef *header, uint8_t *rx_data)
 //  case 0x204:
 //    detect_device_update(&offline_dev, MOTOR4_OFFLINE_EVENT);
 //    break;
-  case 0x205:
-    detect_device_update(&offline_dev, YAW_OFFLINE_EVENT);
-    break;
+//  case 0x205:
+//    detect_device_update(&offline_dev, YAW_OFFLINE_EVENT);
+//    break;
   case 0x206:
     detect_device_update(&offline_dev, PITCH_OFFLINE_EVENT);
     break;
@@ -175,6 +175,9 @@ int32_t can2_detect_update(CAN_RxHeaderTypeDef *header, uint8_t *rx_data)
     break;
   case 0x204:
     detect_device_update(&offline_dev, MOTOR4_OFFLINE_EVENT);
+    break;
+	case 0x205:
+    detect_device_update(&offline_dev, YAW_OFFLINE_EVENT);
     break;
   default:
     break;

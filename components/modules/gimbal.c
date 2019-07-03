@@ -45,12 +45,19 @@ int32_t gimbal_cascade_register(struct gimbal *gimbal, const char *name, enum de
     name_len = OBJECT_NAME_MAX_LEN / 2;
   }
 
-  for (int i = 0; i < 2; i++)
-  {
-    memcpy(&motor_name[i], name, name_len);
-    gimbal->motor[i].can_periph = can;
-    gimbal->motor[i].can_id = 0x205 + i;
-  }
+//  for (int i = 0; i < 2; i++)
+//  {
+//    memcpy(&motor_name[i], name, name_len);
+//    gimbal->motor[i].can_periph = can;
+//    gimbal->motor[i].can_id = 0x205 + i;
+//  }
+	  memcpy(&motor_name[0], name, name_len);
+    gimbal->motor[0].can_periph = DEVICE_CAN2;
+    gimbal->motor[0].can_id = 0x205;
+	
+	  memcpy(&motor_name[1], name, name_len);
+    gimbal->motor[1].can_periph = DEVICE_CAN1;
+    gimbal->motor[1].can_id = 0x206;
 
   memcpy(&motor_name[YAW_MOTOR_INDEX][name_len], "_YAW\0", 5);
   memcpy(&motor_name[PITCH_MOTOR_INDEX][name_len], "_PIT\0", 5);

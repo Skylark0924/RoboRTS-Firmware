@@ -43,7 +43,7 @@
 
 /* chassis motor use 3508 */
 /* the deceleration ratio of chassis motor */
-#define MOTOR_DECELE_RATIO (1.0f / 19.0f)
+#define MOTOR_DECELE_RATIO 19.0f
 /* single 3508 motor maximum speed, unit is rpm */
 #define MAX_WHEEL_RPM 8500 //8347rpm = 3500mm/s
 /* chassis maximum translation speed, unit is mm/s */

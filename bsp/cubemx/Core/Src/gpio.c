@@ -86,6 +86,10 @@ void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(IST_RESET_GPIO_Port, IST_RESET_Pin, GPIO_PIN_SET);
 
+	  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOE, Cap_In_Pin|Cap_Out_Pin,GPIO_PIN_RESET);
+
+	
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOH, POWER_OUT1_Pin|POWER_OUT2_Pin|POWER_OUT3_Pin|POWER_OUT4_Pin, GPIO_PIN_SET);
 
@@ -105,6 +109,13 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
+  /*Configure GPIO pins : PEPin PEPin PEPin */
+  GPIO_InitStruct.Pin = Cap_In_Pin|Cap_Out_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+	
   /*Configure GPIO pins : PHPin PHPin PHPin PHPin */
   GPIO_InitStruct.Pin = POWER_OUT1_Pin|POWER_OUT2_Pin|POWER_OUT3_Pin|POWER_OUT4_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;

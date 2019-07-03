@@ -1,5 +1,6 @@
 Configuration	ROBOT
-STM32CubeMX 	5.0.0
+STM32CubeMX 	4.27
+
 Date	02/25/2019
 MCU	STM32F427IIHx
 
