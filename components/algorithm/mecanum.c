@@ -85,10 +85,10 @@ void mecanum_calculate(struct mecanum *mec, struct gimbal *ch_gimbal)
 //  wheel_rpm[2] = (mec->speed.vx + mec->speed.vy - mec->speed.vw * rotate_ratio_bl) * wheel_rpm_ratio;
 //  wheel_rpm[3] = (-mec->speed.vx + mec->speed.vy - mec->speed.vw * rotate_ratio_br) * wheel_rpm_ratio;
 	
-	wheel_rpm[0] = (-mec->speed.vx*cos_sub_sin - mec->speed.vy*cos_add_sin + mec->speed.vw*rotate_ratio_f)*wheel_rpm_ratio; //转子的转每分
-	wheel_rpm[3] = (-mec->speed.vx*cos_add_sin + mec->speed.vy*cos_sub_sin + mec->speed.vw*rotate_ratio_f)*wheel_rpm_ratio;
-	wheel_rpm[2] = (mec->speed.vx*cos_sub_sin + mec->speed.vy*cos_add_sin + mec->speed.vw*rotate_ratio_b)*wheel_rpm_ratio;
-	wheel_rpm[1] = (mec->speed.vx*cos_add_sin - mec->speed.vy*cos_sub_sin + mec->speed.vw*rotate_ratio_b)*wheel_rpm_ratio;
+	wheel_rpm[0] = (-mec->speed.vx*cos_sub_sin - mec->speed.vy*cos_add_sin - mec->speed.vw*rotate_ratio_f)*wheel_rpm_ratio; //转子的转每分
+	wheel_rpm[3] = (-mec->speed.vx*cos_add_sin + mec->speed.vy*cos_sub_sin - mec->speed.vw*rotate_ratio_f)*wheel_rpm_ratio;
+	wheel_rpm[2] = (mec->speed.vx*cos_sub_sin + mec->speed.vy*cos_add_sin - mec->speed.vw*rotate_ratio_b)*wheel_rpm_ratio;
+	wheel_rpm[1] = (mec->speed.vx*cos_add_sin - mec->speed.vy*cos_sub_sin - mec->speed.vw*rotate_ratio_b)*wheel_rpm_ratio;
   //find max item
   for (uint8_t i = 0; i < 4; i++)
   {
