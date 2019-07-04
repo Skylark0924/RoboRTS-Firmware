@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "chassis.h"
+#include "gimbal.h"
  
 static int32_t motor_pid_input_convert(struct controller *ctrl, void *input);
+static int16_t ch_gimbal_get_ecd_angle(int16_t raw_ecd, int16_t center_offset);
 
 int32_t chassis_pid_register(struct chassis *chassis, const char *name, enum device_can can)
 {
@@ -119,8 +121,8 @@ int32_t chassis_gimbal_yaw_register(struct gimbal *gimbal, const char *name, enu
    gimbal->motor[0].can_id = 0x205;
 
 
-  memcpy(&motor_name[YAW_MOTOR_INDEX][name_len], "_CH_YAW\0", 5);
-	
+   memcpy(&motor_name[YAW_MOTOR_INDEX][name_len], "_CH_YAW\0", 5);
+	  
 	  return RM_OK;
 }
 
@@ -128,6 +130,8 @@ int32_t chassis_execute(struct chassis *chassis, struct gimbal *ch_gimbal)
 {
   float motor_out;
   struct motor_data *pdata;
+	struct motor_data *chdata;  //底盘读取云台yaw编码器
+
   struct mecanum_motor_fdb wheel_fdb[4];
 
   static uint8_t init_f = 0;
@@ -153,6 +157,9 @@ int32_t chassis_execute(struct chassis *chassis, struct gimbal *ch_gimbal)
     chassis->mecanum.speed.vw += chassis->acc.wz/1000.0f*period;
   }
   
+	chdata = motor_device_get_data(&(ch_gimbal->motor[YAW_MOTOR_INDEX]));
+  ch_gimbal->ecd_angle.yaw = YAW_MOTOR_POSITIVE_DIR * ch_gimbal_get_ecd_angle(chdata->ecd, ch_gimbal->param.yaw_ecd_center) / ENCODER_ANGLE_RATIO;
+
   mecanum_calculate(&(chassis->mecanum), ch_gimbal);
 
   for (int i = 0; i < 4; i++)
@@ -169,7 +176,7 @@ int32_t chassis_execute(struct chassis *chassis, struct gimbal *ch_gimbal)
 
     motor_device_set_current(&chassis->motor[i], (int16_t)motor_out);
   }
-
+	
   mecanum_position_measure(&(chassis->mecanum), wheel_fdb);
 
   return RM_OK;
@@ -297,4 +304,24 @@ static int32_t motor_pid_input_convert(struct controller *ctrl, void *input)
   pid_fdb->feedback = data->speed_rpm;
 
   return RM_OK;
+}
+
+static int16_t ch_gimbal_get_ecd_angle(int16_t raw_ecd, int16_t center_offset)
+{
+  int16_t tmp = 0;
+  if (center_offset >= 4096)
+  {
+    if (raw_ecd > center_offset - 4096)
+      tmp = raw_ecd - center_offset;
+    else
+      tmp = raw_ecd + 8192 - center_offset;
+  }
+  else
+  {
+    if (raw_ecd > center_offset + 4096)
+      tmp = raw_ecd - 8192 - center_offset;
+    else
+      tmp = raw_ecd - center_offset;
+  }
+  return tmp;
 }

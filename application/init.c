@@ -80,7 +80,10 @@ void hw_init(void)
     rc_device_register(&rc_dev, "uart_rc", 0);
     dr16_forword_callback_register(rc_data_forword_by_can);
     chassis_pid_register(&chassis, "chassis", DEVICE_CAN2);
-		chassis_gimbal_yaw_register(&ch_gimbal, "ch_gimbal", DEVICE_CAN1);
+		gimbal_cascade_register(&gimbal, "gimbal", DEVICE_CAN1);
+//		chassis_gimbal_yaw_register(&ch_gimbal, "ch_gimbal", DEVICE_CAN2);
+		gimbal_yaw_disable(&gimbal);
+    gimbal_pitch_disable(&gimbal);
     chassis_disable(&chassis);
   }
   else

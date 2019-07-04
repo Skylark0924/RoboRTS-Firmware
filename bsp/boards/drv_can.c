@@ -286,6 +286,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
       if (can2_manage.can_rec_callback[i] != NULL)
       {
         (*(can2_manage.can_rec_callback[i]))(&rx_header, rx_data);
+				
       }
     }
   }

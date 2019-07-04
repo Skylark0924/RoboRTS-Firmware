@@ -56,6 +56,7 @@ struct can_std_msg
 
 extern struct can_manage_obj can1_manage;
 extern struct can_manage_obj can2_manage;
+extern float ch_gimbal_yaw_angle;
 
 void can_manage_init(void);
 int32_t can_fifo0_rx_callback_register(can_manage_obj_t m_obj, can_stdmsg_rx_callback_t fun);

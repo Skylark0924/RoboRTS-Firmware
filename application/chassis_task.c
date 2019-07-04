@@ -19,6 +19,7 @@
 #include "chassis_task.h"
 #include "timer_task.h"
 #include "infantry_cmd.h"
+#include "param.h"
 
 static float vx, vy, vw;
 
@@ -33,8 +34,16 @@ void chassis_task(void const *argument)
   rc_device_t prc_dev = NULL;
   rc_info_t prc_info = NULL;
   pchassis = chassis_find("chassis");
-	ch_gimbal=gimbal_find("ch_gimbal");
+	ch_gimbal=gimbal_find("gimbal");
   prc_dev = rc_device_find("uart_rc");
+	
+	cali_sys_t *pparam = NULL;
+  pparam = get_cali_param();
+
+  if (pparam->gim_cali_data.calied_done == CALIED_FLAG)
+  {
+    gimbal_set_offset(ch_gimbal, pparam->gim_cali_data.yaw_offset, pparam->gim_cali_data.pitch_offset);
+  }
 
   if (prc_dev != NULL)
   {
@@ -84,7 +93,7 @@ void chassis_task(void const *argument)
 
       chassis_set_acc(pchassis, 0, 0, 0);
     }
-
+		
     chassis_execute(pchassis, ch_gimbal);
     osDelayUntil(&period, 2);
   }
