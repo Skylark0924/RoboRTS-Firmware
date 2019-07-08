@@ -68,8 +68,10 @@ void gimbal_task(void const *argument)
 
   if (pparam->gim_cali_data.calied_done == CALIED_FLAG)
   {
-    gimbal_set_offset(pgimbal, pparam->gim_cali_data.yaw_offset, pparam->gim_cali_data.pitch_offset);
-  }
+//    gimbal_set_offset(pgimbal, pparam->gim_cali_data.yaw_offset, pparam->gim_cali_data.pitch_offset);
+			gimbal_set_offset(pgimbal, pparam->gim_cali_data.yaw_offset, 2570);
+
+	}
   else
   {
     auto_adjust_f = 1;
@@ -95,8 +97,8 @@ void gimbal_task(void const *argument)
     if (rc_device_get_state(prc_dev, RC_S2_UP) == RM_OK)
     {
       gimbal_set_yaw_mode(pgimbal, GYRO_MODE);
-      pit_delta = -(float)prc_info->ch4 * 0.006f;
-      yaw_delta = -(float)prc_info->ch3 * 0.006f;
+      pit_delta = -(float)prc_info->ch4 * 0.0007f;
+      yaw_delta = -(float)prc_info->ch3 * 0.0007f;
       gimbal_set_pitch_delta(pgimbal, pit_delta);
       gimbal_set_yaw_delta(pgimbal, yaw_delta);
     }
@@ -104,12 +106,12 @@ void gimbal_task(void const *argument)
     if (rc_device_get_state(prc_dev, RC_S2_MID) == RM_OK)
     {
       gimbal_set_yaw_mode(pgimbal, ENCODER_MODE);
-      pit_delta = -(float)prc_info->ch4 * 0.006f;
+      pit_delta = -(float)prc_info->ch4 * 0.0007f;
       gimbal_set_pitch_delta(pgimbal, pit_delta);
 
       if (rc_device_get_state(prc_dev, RC_S2_UP2MID) == RM_OK)
       {
-        gimbal_set_yaw_angle(pgimbal,0, 0);
+        gimbal_set_yaw_angle(pgimbal,0, 0);				
       }
     }
 
@@ -121,12 +123,14 @@ void gimbal_task(void const *argument)
     if (rc_device_get_state(prc_dev, RC_S2_DOWN) == RM_OK)
     {
       gimbal_set_yaw_mode(pgimbal, ENCODER_MODE);
+			gimbal_pitch_disable(pgimbal);
+			gimbal_yaw_disable(pgimbal);
     }
 
-    if (get_offline_state() == 0)
-    {
-      gimbal_state_init(pgimbal);
-    }
+//    if (get_offline_state() == 0)
+//    {
+//      gimbal_state_init(pgimbal);
+//    }
 
     auto_gimbal_adjust(pgimbal);
 

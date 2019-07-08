@@ -47,6 +47,7 @@
 /* the positive direction of yaw axis motor */
 #define YAW_MOTOR_POSITIVE_DIR  1.0f
 
+
 #include "motor.h"
 #include "single_gyro.h"
 #include "pid_controller.h"

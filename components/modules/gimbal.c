@@ -24,6 +24,8 @@ static int32_t pitch_ecd_input_convert(struct controller *ctrl, void *input);
 static int32_t gimbal_set_yaw_gyro_angle(struct gimbal *gimbal, float yaw, uint8_t mode);
 static int16_t gimbal_get_ecd_angle(int16_t raw_ecd, int16_t center_offset);
 
+int PIT_CURRENT_OFFSET=1000.0f;
+
 //云台级联控制寄存器
 int32_t gimbal_cascade_register(struct gimbal *gimbal, const char *name, enum device_can can)
 {
@@ -74,13 +76,13 @@ int32_t gimbal_cascade_register(struct gimbal *gimbal, const char *name, enum de
 
   gimbal->mode.bit.yaw_mode = ENCODER_MODE;
   gimbal->ctrl[YAW_MOTOR_INDEX].convert_feedback = yaw_ecd_input_convert;
-  pid_struct_init(&(gimbal->cascade[YAW_MOTOR_INDEX].outer), 2000, 0, 50, 0, 0);
-  pid_struct_init(&(gimbal->cascade[YAW_MOTOR_INDEX].inter), 30000, 3000, 70, 0.2, 0);
+  pid_struct_init(&(gimbal->cascade[YAW_MOTOR_INDEX].outer), 2000, 0, 10, 0, 0);
+  pid_struct_init(&(gimbal->cascade[YAW_MOTOR_INDEX].inter), 30000, 3000, 80, 0.1, 0);
 
   gimbal->mode.bit.pitch_mode = ENCODER_MODE;
   gimbal->ctrl[PITCH_MOTOR_INDEX].convert_feedback = pitch_ecd_input_convert;
-  pid_struct_init(&(gimbal->cascade[PITCH_MOTOR_INDEX].outer), 2000, 0, 30, 0, 0);
-  pid_struct_init(&(gimbal->cascade[PITCH_MOTOR_INDEX].inter), 30000, 3000, 60, 0.2, 0);
+  pid_struct_init(&(gimbal->cascade[PITCH_MOTOR_INDEX].outer), 2000, 0, 0.2, 0.1, 0);
+  pid_struct_init(&(gimbal->cascade[PITCH_MOTOR_INDEX].inter), 30000, 3000, 3000, 0.2, 0);
 
   for (int i = 0; i < 2; i++)
   {
@@ -322,6 +324,7 @@ int32_t gimbal_execute(struct gimbal *gimbal)
   float motor_out;
   struct motor_data *pdata;
 
+
   if (gimbal == NULL)
     return -RM_INVAL;
 
@@ -381,7 +384,7 @@ int32_t gimbal_execute(struct gimbal *gimbal)
   gimbal->ecd_angle.pitch = PITCH_MOTOR_POSITIVE_DIR * gimbal_get_ecd_angle(pdata->ecd, gimbal->param.pitch_ecd_center) / ENCODER_ANGLE_RATIO;
   controller_execute(&(gimbal->ctrl[PITCH_MOTOR_INDEX]), (void *)gimbal);
   controller_get_output(&(gimbal->ctrl[PITCH_MOTOR_INDEX]), &motor_out);
-  motor_device_set_current(&(gimbal->motor[PITCH_MOTOR_INDEX]), (int16_t)PITCH_MOTOR_POSITIVE_DIR * motor_out);
+  motor_device_set_current(&(gimbal->motor[PITCH_MOTOR_INDEX]), (int16_t)(PITCH_MOTOR_POSITIVE_DIR * motor_out+ PIT_CURRENT_OFFSET));
 
   return RM_OK;
 }
