@@ -11,6 +11,7 @@
 #include "JudgeTask.h"
 #include "referee_system.h"
 #include "usart.h"
+#include "drv_uart.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -30,6 +31,13 @@ void InitJudgeUart(void){
 			Error_Handler();
 	}
 }
+
+void judge_task(void const *argument)
+{
+	
+}
+
+
 uint8_t receiving = 0;
 uint8_t received = 0;
 uint8_t buffer[80] = {0}; 
@@ -202,7 +210,7 @@ void judgeUartRxCpltCallback(void)
 			}
 		}
 		
-		if(HAL_UART_Receive_DMA(&JUDGE_UART, &tmp_judge, 1) != HAL_OK)
+		if(HAL_UART_Receive_DMA(&huart6, &tmp_judge, 1) != HAL_OK)
 		{
 			Error_Handler();
 	  }
@@ -214,8 +222,6 @@ JudgeState_e JUDGE_State = OFFLINE;
 
 
 ext_robot_hurt_t HitData;
-AAAA_Data detectingAAAA;
-AAAA_Act reactingAAAA;
 
 uint16_t maxHP = 300;
 uint16_t remainHP;
@@ -236,9 +242,7 @@ uint8_t AL,AH;
 uint8_t HitedNum[40] = {6};
 float HitedAngle[40] = {180};
 uint8_t HitedCnt = 0;
-extern uint8_t AAAAmode;
-extern float ChassisTwistGapAngle;
-extern uint8_t colorAim;
+
 
 uint8_t HitCnt=0;
 void Judge_Refresh_Hit()
@@ -247,68 +251,12 @@ void Judge_Refresh_Hit()
 	ArmorHitted = buffer[7];
 	AL = ArmorHitted & 0x7;
 	AH = ArmorHitted >> 4;
-	if(AH == 0)
-	{
-		if(detectingAAAA.Delay == 0)detectingAAAA.Armor = AL;
-		if(AL == 0 || AL == 1)
-		{
-			HitedAngle[HitedCnt] = (GMY.RxMsgC6x0.angle - GM_YAW_ZERO) * 360 / 8192.0f;
-			ANGLE_LIMIT_360(info->yaw_gyro_angle, chassis->mecanum.gyro.yaw_gyro_angle);
-			ANGLE_LIMIT_360_TO_180(HitedAngle[HitedCnt]);
-			HitedNum[HitedCnt] = AL;
-			if(HitedNum[HitedCnt] == 0 && AAAAmode == 2)
-			{
-				if(reactingAAAA.Dir == 1 && reactingAAAA.inPosition)
-				{
-					//reactingAAAA.Angle0 += 5;
-				}
-				reactingAAAA.Dir = 1;
-				ChassisTwistGapAngle = reactingAAAA.Angle0;
-				if(reactingAAAA.counting0)
-				{
-					reactingAAAA.redetect0 = reactingAAAA.redC0;
-				}
-				reactingAAAA.counting0 = 0;
-				reactingAAAA.redC0 = 0;
-//				if(HitedAngle[HitedCnt] > reactingAAAA.Angle0)
-//				{
-//					if(HitedAngle[HitedCnt] < 90 && HitedAngle[HitedCnt] > -90)
-//					{
-//						float angleAdjust0 = HitedAngle[HitedCnt] - reactingAAAA.Angle0;
-////						reactingAAAA.Angle0 += angleAdjust0 + 1;
-////						reactingAAAA.Angle1 += angleAdjust0 + 1;
-//					}
-//				}
-			}
-
-			else if(HitedNum[HitedCnt] == 1 && AAAAmode == 2)
-			{
-				if(reactingAAAA.Dir == -1 && reactingAAAA.inPosition)
-				{
-					//reactingAAAA.Angle1 -= 5;
-				}
-				reactingAAAA.Dir = -1;
-				ChassisTwistGapAngle = reactingAAAA.Angle1;
-				if(reactingAAAA.counting1)
-				{
-					reactingAAAA.redetect1 = reactingAAAA.redC1;
-				}
-				reactingAAAA.counting1 = 0;
-				reactingAAAA.redC1 = 0;
-//				if(HitedAngle[HitedCnt] < reactingAAAA.Angle1)
-//				{
-//					if(HitedAngle[HitedCnt] < 90 && HitedAngle[HitedCnt] > -90)
-//					{
-//						float angleAdjust1 = reactingAAAA.Angle1 - HitedAngle[HitedCnt];
-////						reactingAAAA.Angle0 -= angleAdjust1 + 1;
-////						reactingAAAA.Angle1 -= angleAdjust1 + 1;
-//					}
-//				}
-			}
+	
+			
 			HitedCnt++;
 			if(HitedCnt > 35)HitedCnt = 0;
-		}
-	}
+		
+	
 	JUDGE_Received = 1;
 }
 
@@ -409,8 +357,7 @@ void Referee_Update_RobotState()
 //	if(coooool)cooldown0 *= 5;
 	JUDGE_Received = 1;
 	
-	if(GameRobotState.robot_id > 9)colorAim = 1;//blue
-	else colorAim = 0;
+
 	//电源输出情况TBD
 	
 //	unsigned char* grs = (unsigned char*)&GameRobotState;
@@ -492,7 +439,7 @@ void Referee_Transmit_UserData()//数据上传可以限制在10hz
 	buffer[1] = 19;//数据帧中 data 的长度,占两个字节
 	
 	buffer[3] = 1;//包序号
-	buffer[4] = ref_get_crc8(&buffer[0], 5-1, myCRC8_INIT);//帧头 CRC8 校验
+	buffer[4] = ref_get_crc8(&buffer[0], 5-1, ref_crc8_init);//帧头 CRC8 校验
 	buffer[5] = 0x01;
 	buffer[6] = 0x03;
 	
@@ -508,12 +455,12 @@ void Referee_Transmit_UserData()//数据上传可以限制在10hz
 	for(int i=21;i<25;i++) buffer[i] = bs3[i-21];
 	buffer[25] = custom_data.masks;
 	static uint16_t CRC16=0;
-	CRC16 = ref_get_crc16(buffer, 26, myCRC16_INIT);
+	CRC16 = ref_get_crc16(buffer, 26, ref_crc16_init);
 	buffer[26] = CRC16 & 0x00ff;//0xff
 	buffer[27] = (CRC16 >> 8) & 0xff;
 
 	tx_free = 0;
-	while(HAL_UART_Transmit_IT(&JUDGE_UART,(uint8_t *)&buffer,28)!=HAL_OK);
+	while(HAL_UART_Transmit_IT(&huart6,(uint8_t *)&buffer,28)!=HAL_OK);
 }
 
 uint8_t flying = 0;
@@ -525,7 +472,7 @@ void Referee_Transmit_RobotData()
 	buffer[1] = 7;//数据帧中 data 的长度,占两个字节
 	
 	buffer[3] = 1;//包序号
-	buffer[4] = ref_get_crc8(&buffer[0], 5-1, myCRC8_INIT);//帧头 CRC8 校验
+	buffer[4] = ref_get_crc8(&buffer[0], 5-1, ref_crc8_init);//帧头 CRC8 校验
 	buffer[5] = 0x01;
 	buffer[6] = 0x03;
 	
@@ -536,51 +483,14 @@ void Referee_Transmit_RobotData()
 	buffer[10] = 0;
 //	buffer[11] = GameRobotState.robot_id;//客户端的 ID, 只能为发送者机器人对应的客户端,  占两个字节
 //	if(buffer[11]>9&&buffer[11]<16)buffer[11]+=6;
-	if(colorAim == 1)
-	{
-		buffer[11] = 17;
-	}
-	else 
-	{
+
 		buffer[11] = 7;
 		buffer[12] = 0;
-	}
-	buffer[13] = flying;
+
 	static uint16_t CRC16=0;
-	CRC16 = ref_get_crc16(buffer, 14, myCRC16_INIT);
+	CRC16 = ref_get_crc16(buffer, 14, ref_crc16_init);
 	buffer[14] = CRC16 & 0x00ff;//0xff
 	buffer[15] = (CRC16 >> 8) & 0xff;
 	tx_free = 0;
 	while(HAL_UART_Transmit_IT(&huart6,(uint8_t *)&buffer,28)!=HAL_OK);
 }
-
-//void Send_User_Data()
-//{
-//	uint8_t buffer[22]={0};
-//	//test
-//	user_data.data1 += 0.1f;
-//	user_data.data2 += 0.2f;
-//	user_data.data3 += 0.3f;
-//	//user_data.mask = 0xE0;//二进制最左位对应灯条最右灯
-//	
-//	unsigned char * bs1 = (unsigned char*)&user_data.data1;
-//	unsigned char * bs2 = (unsigned char*)&user_data.data2;
-//	unsigned char * bs3 = (unsigned char*)&user_data.data3;
-//	buffer[0] = 0xA5;
-//	buffer[1]  = 13;
-//	buffer[3] = 1;
-//	buffer[4] = ref_get_crc8(&buffer[0], 5-1, myCRC8_INIT);
-//	buffer[5] = 0x00;
-//	buffer[6] = 0x01;
-//	for(int i=7;i<11;i++) buffer[i] = bs1[i-7];
-//	for(int i=11;i<15;i++) buffer[i] = bs2[i-11];
-//	for(int i=15;i<19;i++) buffer[i] = bs3[i-15];
-//	buffer[19] = user_data.mask;
-//	static uint16_t CRC16=0;
-//	CRC16 = ref_get_crc16(buffer, 20, myCRC16_INIT);
-//	buffer[20] = CRC16 & 0x00ff;//0xff
-//	buffer[21] = (CRC16 >> 8) & 0xff;
-
-//	tx_free = 0;
-//	while(HAL_UART_Transmit_DMA(&JUDGE_UART,(uint8_t *)&buffer,22)!=HAL_OK);
-//}

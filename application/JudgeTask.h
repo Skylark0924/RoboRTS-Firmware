@@ -131,6 +131,8 @@ typedef __packed struct
 	uint8_t counting1;
 } AAAA_Act;
 
+void judge_task(void const * argument);
+
 extern float fakeHeat0;
 extern float realBulletSpeed0;
 extern uint16_t realHeat0;

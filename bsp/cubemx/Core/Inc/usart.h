@@ -60,6 +60,7 @@
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
+#define JUDGE_UART huart6;
 
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart6;

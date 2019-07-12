@@ -18,6 +18,10 @@
 #include "usart.h"
 #include "dma.h"
 #include "drv_uart.h"
+#include "JudgeTask.h"
+
+uint8_t  tx_free = 1;
+uint8_t  rx_free = 1;
 
 extern UART_HandleTypeDef huart6;
 extern DMA_HandleTypeDef hdma_usart6_rx;
@@ -64,7 +68,7 @@ void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef *huart)
   }
   else if (huart == &huart6)
   {
-    usart_rec_to_buff(&usart6_manage_obj, INTERRUPT_TYPE_DMA_HALF);
+    //usart_rec_to_buff(&usart6_manage_obj, INTERRUPT_TYPE_DMA_HALF);
   }
 
   return;
@@ -78,7 +82,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
   }
   else if (huart == &huart6)
   {
-    usart_rec_to_buff(&usart6_manage_obj, INTERRUPT_TYPE_DMA_ALL);
+		judgeUartRxCpltCallback();  //裁判系统数据解算 
+    //usart_rec_to_buff(&usart6_manage_obj, INTERRUPT_TYPE_DMA_ALL);
   }
 
   return;
@@ -92,7 +97,8 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
   }
   else if (huart == &huart6)
   {
-    usart_transmit_hook(&usart6_manage_obj);
+		tx_free=1;
+    //usart_transmit_hook(&usart6_manage_obj);
   }
 
   return;
@@ -300,4 +306,42 @@ static void usart_rec_to_buff(usart_manage_obj_t *m_obj, interrput_type int_type
   m_obj->read_start_index = (m_obj->read_start_index + read_length) % (m_obj->rx_buffer_size);
 
   return;
+}
+
+uint16_t ERRORTEST;
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *UartHandle)
+{
+  ERRORTEST = UartHandle->ErrorCode;
+	tx_free = 1;
+	uint32_t isrflags   = READ_REG(UartHandle->Instance->SR);//手册上有讲，清错误都要先读SR
+	if((__HAL_UART_GET_FLAG(UartHandle, UART_FLAG_PE))!=RESET)
+	{
+		READ_REG(UartHandle->Instance->DR);//PE清标志，第二步读DR
+		__HAL_UART_CLEAR_FLAG(UartHandle, UART_FLAG_PE);//清标志
+		UartHandle->gState = HAL_UART_STATE_READY;
+		UartHandle->RxState = HAL_UART_STATE_READY;
+	}
+	if((__HAL_UART_GET_FLAG(UartHandle, UART_FLAG_FE))!=RESET)
+	{
+		READ_REG(UartHandle->Instance->DR);//FE清标志，第二步读DR
+		__HAL_UART_CLEAR_FLAG(UartHandle, UART_FLAG_FE);
+		UartHandle->gState = HAL_UART_STATE_READY;
+		UartHandle->RxState = HAL_UART_STATE_READY;
+	}
+	
+	if((__HAL_UART_GET_FLAG(UartHandle, UART_FLAG_NE))!=RESET)
+	{
+		READ_REG(UartHandle->Instance->DR);//NE清标志，第二步读DR
+		__HAL_UART_CLEAR_FLAG(UartHandle, UART_FLAG_NE);
+		UartHandle->gState = HAL_UART_STATE_READY;
+		UartHandle->RxState = HAL_UART_STATE_READY;
+	}        
+	
+	if((__HAL_UART_GET_FLAG(UartHandle, UART_FLAG_ORE))!=RESET)
+	{
+		READ_REG(UartHandle->Instance->CR1);//ORE清标志，第二步读CR
+		__HAL_UART_CLEAR_FLAG(UartHandle, UART_FLAG_ORE);
+		UartHandle->gState = HAL_UART_STATE_READY;
+		UartHandle->RxState = HAL_UART_STATE_READY;
+	}  
 }

@@ -36,6 +36,10 @@
 
 #define USART6_PRINTF_BUFF_SIZE (128)
 
+extern uint8_t tx_free;
+extern uint8_t rx_free;
+
+
 typedef uint32_t (*usart_call_back)(uint8_t *buf, uint32_t len);
 
 typedef struct

@@ -31,6 +31,7 @@
 #include "timer_task.h"
 #include "shoot_task.h"
 #include "Cap2ControlTask.h"
+#include "JudgeTask.h"
 #include "communicate.h"
 #include "infantry_cmd.h"
 #include "init.h"
@@ -110,6 +111,7 @@ osThreadId chassis_task_t;
 osThreadId cap_task_t;
 osThreadId gimbal_task_t;
 osThreadId communicate_task_t;
+osThreadId judge_task_t;
 osThreadId cmd_task_t;
 osThreadId shoot_task_t;
 
@@ -128,6 +130,11 @@ void task_init(void)
 //  osThreadDef(CMD_TASK, infantry_cmd_task, osPriorityNormal, 0, 4096);
 //  cmd_task_t = osThreadCreate(osThread(CMD_TASK), NULL);
   
+	
+	osThreadDef(JUDGE_TASK, judge_task, osPriorityNormal, 0, 4096);
+  judge_task_t = osThreadCreate(osThread(JUDGE_TASK), NULL);
+  
+	
   if (app == CHASSIS_APP)
   {
     osThreadDef(CHASSIS_TASK, chassis_task, osPriorityNormal, 0, 512);

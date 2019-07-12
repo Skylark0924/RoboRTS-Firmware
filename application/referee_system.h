@@ -79,7 +79,10 @@ void referee_unpack_fifo_data(void);
 uint32_t referee_uart_rx_data_handle(uint8_t *data, uint32_t len);
 uint32_t referee_send_data_register(ref_send_handler_t send_t);
 void referee_protocol_tansmit(uint16_t cmd_id, void* p_buf, uint16_t len);
-	
+
+static const uint8_t ref_crc8_init = 0xff;
+static uint16_t ref_crc16_init = 0xffff;
+
 uint8_t     ref_get_crc8(uint8_t *p_msg, uint32_t len, uint8_t crc8) ;
 uint32_t    ref_verify_crc8(uint8_t *p_msg, uint32_t len);
 void        ref_append_crc8(uint8_t *p_msg, uint32_t len);
