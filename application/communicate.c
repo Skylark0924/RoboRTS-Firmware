@@ -125,7 +125,7 @@ void communicate_task(void const *argument)
   soft_timer_register(usb_tx_flush, NULL, 1);
 	protocol_send_list_add_callback_reg(protocol_send_success_callback);
 
-  can_fifo0_rx_callback_register(&can2_manage, uwb_rcv_callback);
+  //can_fifo0_rx_callback_register(&can2_manage, uwb_rcv_callback);
   can_fifo0_rx_callback_register(&can2_manage, can2_rcv_callback);
 
   while (1)
