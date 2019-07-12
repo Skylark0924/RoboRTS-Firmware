@@ -53,6 +53,7 @@ extern int ulog_console_backend_init(void);
 
 void system_config(void)
 {
+	// 读取GPIO_PIN_6电平值,判断是云台还是底盘
   glb_sys_cfg = HAL_GPIO_ReadPin(SYS_CFG_Port, SYS_CFG_Pin);
 }
 
@@ -75,19 +76,22 @@ void hw_init(void)
   referee_send_data_register(usart3_transmit);
 
 
-  if(glb_sys_cfg == CHASSIS_APP)
+  if(glb_sys_cfg == CHASSIS_APP)//底盘板
   {
     rc_device_register(&rc_dev, "uart_rc", 0);
     dr16_forword_callback_register(rc_data_forword_by_can);
     chassis_pid_register(&chassis, "chassis", DEVICE_CAN2);
+		chassis_disable(&chassis);
+		
+		/*****用于读取云台YAw编码器角度作为小陀螺模式底盘结算的参数****/
 		gimbal_cascade_register(&gimbal, "gimbal", DEVICE_CAN1);
 //		chassis_gimbal_yaw_register(&ch_gimbal, "ch_gimbal", DEVICE_CAN2);
 		gimbal_yaw_disable(&gimbal);
     gimbal_pitch_disable(&gimbal);
-    chassis_disable(&chassis);
   }
-  else
+  else//云台板
   {
+		/*****遥控器数据通过can2从底盘传入云台******/
     rc_device_register(&rc_dev, "can_rc", 0);
     gimbal_cascade_register(&gimbal, "gimbal", DEVICE_CAN1);
 
@@ -117,6 +121,7 @@ void task_init(void)
   osThreadDef(TIMER_1MS, timer_task, osPriorityHigh, 0, 512);
   timer_task_t = osThreadCreate(osThread(TIMER_1MS), NULL);
 
+	/********双板通信的线程**********/
   osThreadDef(COMMUNICATE_TASK, communicate_task, osPriorityHigh, 0, 4096);
   communicate_task_t = osThreadCreate(osThread(COMMUNICATE_TASK), NULL);
 
@@ -127,7 +132,8 @@ void task_init(void)
   {
     osThreadDef(CHASSIS_TASK, chassis_task, osPriorityNormal, 0, 512);
     chassis_task_t = osThreadCreate(osThread(CHASSIS_TASK), NULL);
-		    
+		
+		/********超级电容线程**********/
 		osThreadDef(CAP_TASK, Cap_task, osPriorityNormal, 0, 512);
     cap_task_t = osThreadCreate(osThread(CAP_TASK), NULL);
   }

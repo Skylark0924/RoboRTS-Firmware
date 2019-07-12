@@ -203,6 +203,9 @@ void referee_unpack_fifo_data(void)
   }
 }
 
+
+
+// 以下和old framework 的offical_Judge_Handler.h一样
 static const uint8_t ref_crc8_init = 0xff;
 static const uint8_t ref_crc8_tab[256] =
 {

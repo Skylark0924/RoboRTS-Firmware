@@ -305,7 +305,7 @@ int32_t gimbal_yaw_enable(struct gimbal *gimbal)
   controller_enable(&(gimbal->ctrl[YAW_MOTOR_INDEX]));
 
   return RM_OK;
-}
+} 
 
 //yaw disable
 int32_t gimbal_yaw_disable(struct gimbal *gimbal)

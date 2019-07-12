@@ -432,6 +432,11 @@
               <FileType>1</FileType>
               <FilePath>..\application\Cap2ControlTask.c</FilePath>
             </File>
+            <File>
+              <FileName>JudgeTask.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\application\JudgeTask.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
