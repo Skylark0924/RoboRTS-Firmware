@@ -34,7 +34,21 @@ void InitJudgeUart(void){
 
 void judge_task(void const *argument)
 {
-	
+	uint16_t dataSendCnt;
+	while(1)
+	{
+		if(dataSendCnt < 300)dataSendCnt++;
+		else dataSendCnt = 0;
+		if(dataSendCnt == 120)
+		{
+			Referee_Transmit_UserData();
+		}
+		else if(dataSendCnt == 240)
+		{
+			Referee_Transmit_RobotData();
+			dataSendCnt = 0;
+		}
+	}
 }
 
 

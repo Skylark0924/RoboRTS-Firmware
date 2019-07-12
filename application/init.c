@@ -131,7 +131,7 @@ void task_init(void)
 //  cmd_task_t = osThreadCreate(osThread(CMD_TASK), NULL);
   
 	
-	osThreadDef(JUDGE_TASK, judge_task, osPriorityNormal, 0, 4096);
+	osThreadDef(JUDGE_TASK, judge_task, osPriorityLow, 0, 4096);
   judge_task_t = osThreadCreate(osThread(JUDGE_TASK), NULL);
   
 	
