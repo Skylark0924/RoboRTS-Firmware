@@ -61,6 +61,9 @@
   #define PI 3.14159265354f
 #endif
 
+#define MAX_RPM 8911//469*CHASSIS_DECELE_RATIO //底盘电机转子的额定转速
+#define CHASSIS_DECELE_RATIO 19
+
 #define VAL_LIMIT(val, min, max) \
   do                             \
   {                              \

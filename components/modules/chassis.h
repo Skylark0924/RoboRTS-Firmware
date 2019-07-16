@@ -64,6 +64,12 @@ struct chassis_info
   float wheel_rpm[4];
 };
 
+struct wheel_rotate_speed
+{
+	int16_t wheel_rpm[4];
+};
+
+
 chassis_t chassis_find(const char *name);
 
 int32_t chassis_pid_register(struct chassis *chassis, const char *name, enum device_can can);

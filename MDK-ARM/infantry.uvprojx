@@ -437,6 +437,11 @@
               <FileType>1</FileType>
               <FilePath>..\application\JudgeTask.c</FilePath>
             </File>
+            <File>
+              <FileName>powerLimitation_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\application\powerLimitation_task.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
